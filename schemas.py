@@ -31,3 +31,34 @@ class CustomerResponse(CustomerBase):
 
     class Config:
         from_attributes = True
+
+
+        # ---------- Order Item Schemas ----------
+class OrderItemCreate(BaseModel):
+    product_id: int
+    quantity: int
+
+class OrderItemResponse(BaseModel):
+    id: int
+    product_id: int
+    quantity: int
+
+    class Config:
+        from_attributes = True
+
+
+# ---------- Order Schemas ----------
+class OrderCreate(BaseModel):
+    customer_id: int
+    order_date: date
+    items: list[OrderItemCreate]
+
+class OrderResponse(BaseModel):
+    id: int
+    customer_id: int
+    order_date: date
+    status: str
+    items: list[OrderItemResponse]
+
+    class Config:
+        from_attributes = True
