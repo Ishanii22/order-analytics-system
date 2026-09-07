@@ -1,8 +1,10 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database import engine, Base, get_db
+from sqlalchemy import text
 import models
 import schemas
+
 
 # Create all tables in the database
 Base.metadata.create_all(bind=engine)
@@ -119,3 +121,11 @@ def get_order(order_id: int, db: Session = Depends(get_db)):
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
     return order
+
+
+# ---------- Analytics Endpoint ----------
+
+@app.get("/analytics/daily-sales")
+def get_daily_sales(db: Session = Depends(get_db)):
+    result = db.execute(text("SELECT sale_date, total_sales FROM daily_sales ORDER BY sale_date"))
+    return [{"date": str(row[0]), "total_sales": row[1]} for row in result]
