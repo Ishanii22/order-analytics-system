@@ -14,8 +14,7 @@ class ProductCreate(ProductBase):
 class ProductResponse(ProductBase):
     id: int
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 
 # ---------- Customer Schemas ----------
@@ -29,11 +28,10 @@ class CustomerCreate(CustomerBase):
 class CustomerResponse(CustomerBase):
     id: int
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 
-        # ---------- Order Item Schemas ----------
+# ---------- Order Item Schemas ----------
 class OrderItemCreate(BaseModel):
     product_id: int
     quantity: int
@@ -43,8 +41,7 @@ class OrderItemResponse(BaseModel):
     product_id: int
     quantity: int
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 
 # ---------- Order Schemas ----------
@@ -60,5 +57,4 @@ class OrderResponse(BaseModel):
     status: str
     items: list[OrderItemResponse]
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}

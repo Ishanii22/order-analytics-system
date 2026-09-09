@@ -4,12 +4,21 @@ from database import engine, Base, get_db
 from sqlalchemy import text
 import models
 import schemas
+from fastapi.middleware.cors import CORSMiddleware
 
 
 # Create all tables in the database
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 def read_root():
