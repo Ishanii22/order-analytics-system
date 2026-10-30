@@ -77,3 +77,5 @@ Sample sales data from the [Retail Sales Dataset](https://www.kaggle.com/dataset
 - Order creation does not yet validate all items before saving, and does not update stock levels
 - The forecasting model is a simple linear regression; time-series models (ARIMA, Prophet) or day-of-week features would improve accuracy
 - Endpoints are not paginated
+
+- **🔗 [Live Dashboard Demo](https://ishanii22.github.io/order-analytics-system/)** (static snapshot; the full app runs locally with FastAPI + PostgreSQL)
