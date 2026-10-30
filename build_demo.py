@@ -1,4 +1,5 @@
 import json
+import re
 import urllib.request
 from pathlib import Path
 
@@ -18,19 +19,24 @@ data["/customers/"] = [c for c in data["/customers/"] if c["name"] != "Test Cust
 # 3. Embed the data into a copy of dashboard.html
 html = Path("dashboard.html").read_text(encoding="utf-8")
 
-marker = 'const API_BASE = "http://127.0.0.1:8000";'
-if marker not in html:
-    raise SystemExit("API_BASE line not found in dashboard.html")
+pattern = r'const API = "http://127\.0\.0\.1:8000";'
+if not re.search(pattern, html):
+    raise SystemExit("API line not found in dashboard.html")
 
-demo_js = f'''const API_BASE = "http://127.0.0.1:8000";
-const DEMO_DATA = {json.dumps(data)};
-window.fetch = async (url) => ({{ json: async () => DEMO_DATA[url.replace(API_BASE, "")] }});'''
+demo_js = (
+    'const API = "http://127.0.0.1:8000";\n'
+    f'const DEMO_DATA = {json.dumps(data)};\n'
+    'window.fetch = async (url) => ({ ok: true, json: async () => DEMO_DATA[url.replace(API, "")] });'
+)
+html = re.sub(pattern, lambda m: demo_js, html, count=1)
 
-html = html.replace(marker, demo_js)
-html = html.replace("Live data from FastAPI backend", "Static demo - snapshot of data from the FastAPI backend")
-html = html.replace('s.date.split("T")[0]', 's.date.split(" ")[0]')
+html = html.replace('"Connected to API"', '"Demo snapshot"')
+html = html.replace(
+    "Sales, stock and orders from the FastAPI + PostgreSQL backend",
+    "Static demo: a snapshot of data from the FastAPI + PostgreSQL backend",
+)
 
-# 4. Save to docs/index.html (GitHub Pages folder)
+# 4. Save to docs/index.html (the folder GitHub Pages serves)
 Path("docs").mkdir(exist_ok=True)
 Path("docs/index.html").write_text(html, encoding="utf-8")
-print("✅ docs/index.html created")
+print("✅ docs/index.html updated")
